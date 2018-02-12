@@ -4,7 +4,6 @@ const { Motion, spring } = require('react-motion')
 const ConversationNode = require('./conversation-node')
 const GraphicalNode = require('./graphical-node')
 const styled = require('styled-components').default
-const d3 = require('d3-shape')
 const { path } = require('d3-path')
 
 const NULL_LINE = {
@@ -29,8 +28,6 @@ class Screen extends Component {
   handleDragEnd (dragState) {
     dragState.dragging = false
     this.setState({ dragging: false, line: NULL_LINE })
-    // console.log('FINAL DRAG STATE')
-    // console.log(dragState)
     this.props.onLinkAdd(dragState.line.source.id, dragState.line.target.id)
   }
   handleDragMove (e) {
@@ -93,31 +90,31 @@ class Screen extends Component {
     )).map((n, i) => {
       return (
         <ConversationNode
-          editing={this.props.editing}
-          onButtonChange={this.props.onButtonChange}
-          onButtonDelete={this.props.onButtonDelete}
-          onButtonAdd={this.props.onButtonAdd}
+          additionalLinks={this.props.additionalLinks}
           onMessageDelete={this.props.onMessageDelete}
           onMessageChange={this.props.onMessageChange}
+          onButtonChange={this.props.onButtonChange}
+          onButtonDelete={this.props.onButtonDelete}
           onMessageAdd={this.props.onMessageAdd}
+          onButtonAdd={this.props.onButtonAdd}
+          personId={this.props.personId}
+          editing={this.props.editing}
+          key={`conversation-${i}`}
           zoomX={this.props.zoomX}
           zoomY={this.props.zoomY}
-          key={`conversation-${i}`}
-          additionalLinks={this.props.additionalLinks}
           node={n}
-          ee={this.props.ee}
           w={w}
           h={h} />
       )
     })
     const graphicalNodes = this.props.nodes.map((n, i) => (
       <GraphicalNode
-        dragSource={this.state.line.source}
-        dragging={this.state.dragging}
-        onDragBegin={this.handleDragBegin}
         onDragCancel={this.handleDragCancel}
+        dragSource={this.state.line.source}
+        onDragBegin={this.handleDragBegin}
+        personId={this.props.personId}
+        dragging={this.state.dragging}
         onDragEnd={this.handleDragEnd}
-        ee={this.props.ee}
         key={`graphical-${i}`}
         node={n}
         zoom={zoomY}
@@ -159,7 +156,8 @@ class Screen extends Component {
               <g className="GraphicalNodes">{graphicalNodes}</g>
             </g>
           </g>
-          {storylineMode ? null : <g className="ConversationNodes">{conversationNodes}</g>}
+          <g className="ConversationNodes">{conversationNodes}</g>
+          {/*storylineMode ? null : <g className="ConversationNodes">{conversationNodes}</g>*/}
         </g>
       </svg>
     )

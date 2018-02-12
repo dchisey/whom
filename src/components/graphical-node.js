@@ -1,6 +1,7 @@
 const React = require('react')
 const { Component } = React
 const styled = require('styled-components').default
+const route = require('../route')
 
 const Messages = require('./messages')
 const Buttons = require('./buttons')
@@ -36,7 +37,8 @@ class GraphicalNode extends Component {
             // click!
             if (node.data.id === dragSource.id) {
               this.props.onDragCancel()
-              this.props.ee.emit('select-node', [{ id: this.props.node.data.id }])
+              const path = `/person/${personId}/node/${this.props.node.data.id}`
+              route.update(path)
             }
             else {
               const dragState = {
@@ -60,11 +62,9 @@ class GraphicalNode extends Component {
         {this.state.hover ? <Circle r={2} /> : null}
         <HitTarget
           onMouseEnter={() => {
-            console.log('enter')
             this.setState({ hover: true })
           }}
           onMouseLeave={() => {
-            console.log('leave')
             this.setState({ hover: false })
           }}
           onMouseDown={() => {
