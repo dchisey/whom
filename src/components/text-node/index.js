@@ -3,6 +3,7 @@ const { Component } = React
 const styled = require('styled-components').default
 const PropTypes = require('prop-types')
 const qs = require('qs')
+const keydown = require('react-keydown').default
 
 const Messages = require('../messages')
 const Choices = require('../choices')
@@ -55,6 +56,7 @@ class TextNode extends Component {
     const viewed = qs.parse(this.props.location.search.substring(1))
     return +viewed[this.props.node.data.id] || 0
   }
+  @keydown('ctrl+right')
   advanceMessage() {
     const proposedIdx = this.getCurrentIndex() + 1
     this.setState({ opacity: 0 }, () => {
@@ -63,8 +65,10 @@ class TextNode extends Component {
     })
     setTimeout(() => this.setState({ opacity: 1 }), 500)
   }
+  @keydown('ctrl+left')
   reverseMessage(cb) {
     const proposedIdx = this.getCurrentIndex() - 1
+    if (cb instanceof KeyboardEvent) cb = undefined
     this.setState({ opacity: 0 }, () => {
       if (proposedIdx >= 0) this.updateIndex(proposedIdx)
     })
